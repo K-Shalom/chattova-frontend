@@ -1,75 +1,138 @@
 // lib/core/theme/app_theme.dart
 //
-// Chattova's design system colors — a warm orange-coral palette chosen for
-// accessibility (WCAG AA contrast) rather than the default Flutter blue.
-// Both light and dark variants are defined here so the whole app can react
-// to the user's theme preference (see settings: appearance.theme).
+// Composes AppColors + AppTypography + AppRadius into Flutter's ThemeData
+// for light and dark mode. This is the only file that builds ThemeData —
+// screens read colors/text styles via Theme.of(context), never AppColors
+// directly, so switching themes never requires touching screen code.
 
 import 'package:flutter/material.dart';
-
-class AppColors {
-  AppColors._();
-
-  // Brand accent (same across light/dark, this is what makes it "Chattova")
-  static const Color primaryLight = Color(0xFFC1633F); // warm orange-coral
-  static const Color primaryDark = Color(0xFF7A3E28); // deeper fill for dark mode
-
-  // Backgrounds
-  static const Color backgroundLight = Color(0xFFFDFAF8); // warm off-white
-  static const Color backgroundDark = Color(0xFF1C1917); // warm near-black
-
-  // Text
-  static const Color textLight = Color(0xFF1C1917);
-  static const Color textDark = Color(0xFFF5E6DD); // warm cream
-}
+import 'app_colors.dart';
+import 'app_radius.dart';
+import 'app_typography.dart';
 
 class AppTheme {
   AppTheme._();
 
   static ThemeData light() {
+    final textTheme = AppTypography.textTheme(
+      textColor: AppColors.textLight,
+      mutedColor: AppColors.mutedTextLight,
+    );
+
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.primaryLight,
+      seedColor: AppColors.primary,
       brightness: Brightness.light,
-      primary: AppColors.primaryLight,
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
       surface: AppColors.backgroundLight,
+      error: AppColors.error,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.backgroundLight,
-      textTheme: Typography.blackMountainView.apply(
-        bodyColor: AppColors.textLight,
-        displayColor: AppColors.textLight,
-      ),
-      appBarTheme: const AppBarTheme(
+      textTheme: textTheme,
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.backgroundLight,
         foregroundColor: AppColors.textLight,
         elevation: 0,
+        titleTextStyle: textTheme.titleLarge,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.inputBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.inputBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.error),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: textTheme.bodyMedium,
+        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.mutedTextLight),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.backgroundLight,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.pill),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          textStyle: textTheme.labelLarge,
+          elevation: 0,
+        ),
       ),
     );
   }
 
   static ThemeData dark() {
+    final textTheme = AppTypography.textTheme(
+      textColor: AppColors.textDark,
+      mutedColor: AppColors.mutedTextDark,
+    );
+
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.primaryDark,
       brightness: Brightness.dark,
-      primary: AppColors.primaryLight, // keep the accent recognizable in dark mode too
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
       surface: AppColors.backgroundDark,
+      error: AppColors.error,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.backgroundDark,
-      textTheme: Typography.whiteMountainView.apply(
-        bodyColor: AppColors.textDark,
-        displayColor: AppColors.textDark,
-      ),
-      appBarTheme: const AppBarTheme(
+      textTheme: textTheme,
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.backgroundDark,
         foregroundColor: AppColors.textDark,
         elevation: 0,
+        titleTextStyle: textTheme.titleLarge,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surfaceDark,
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.standard,
+          borderSide: const BorderSide(color: AppColors.error),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: textTheme.bodyMedium,
+        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.mutedTextDark),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryDark,
+          foregroundColor: AppColors.textDark,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.pill),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          textStyle: textTheme.labelLarge,
+          elevation: 0,
+        ),
       ),
     );
   }
