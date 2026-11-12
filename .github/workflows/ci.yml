@@ -1,0 +1,31 @@
+name: Flutter CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: flutter-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  flutter-checks:
+    name: Flutter checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Flutter stable
+        run: |
+          git clone --depth 1 --branch stable https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Show SDK versions
+        run: flutter --version
+      - name: Install locked dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Analyze Dart
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test --coverage
+      - name: Build web release
+        run: flutter build web --release
