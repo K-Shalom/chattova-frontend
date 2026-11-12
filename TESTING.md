@@ -1,6 +1,6 @@
 # Automated checks
 
-Flutter CI runs on every push and pull request and can be started manually from Actions. Its stable check name is **Flutter checks**. It installs Flutter stable from the official Flutter repository, resolves dependencies using the committed lockfile, runs `flutter analyze` and the test suite with coverage, then compiles a release web build.
+Flutter CI runs on every push and pull request and can be started manually from Actions. Its stable check name is **Flutter checks**. It installs the Flutter SDK revision recorded in the project's `.metadata` from the official Flutter repository, resolves dependencies using the committed lockfile, runs `flutter analyze` and the test suite with coverage, then compiles a release web build. Upgrade the SDK revision and lockfile together in a separate, tested change.
 
 Run locally before pushing:
 
